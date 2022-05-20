@@ -4,26 +4,26 @@ import mongoose from "mongoose";
 import route from "./route.js";
 import { responseFormat, errorHandler } from "./middleware.js";
 import { connDB } from "./database.js";
-import { config } from "./config.js";
+import { config, HTTP_STATUS_CODES, MESSAGE  } from "./config.js";
+
+// APP
+const app = express();
+
+// Middlewares
+app.use(json());
+app.use(cors());
+
+// Routes
+app.get("/", (req, res) => { res.status(HTTP_STATUS_CODES.OK).json({ message: MESSAGE.HOLA }); });
+app.use("/api", route, responseFormat);
+
+// Middleware error handler
+app.use(errorHandler);
 
 // Connect to database
 connDB();
 
-const app = express();
-
-app.use(json());
-app.use(cors());
-app.use(errorHandler);
-
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to the API",
-    status: "OK",
-  });
-});
-
-app.use("/api", route, responseFormat);
-
+// START SERVER
 mongoose.connection.once('open',() => {
   
   console.log('Connected to MongoDB');

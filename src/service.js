@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { HTTP_STATUS_CODES, MESSAGE } from './config.js';
-import Model from './model_old.js';
+import Model from './model.js'
 
 export default {
-    async hola() { 
+    async list() { 
         const httpStatus = HTTP_STATUS_CODES.OK;
         const message = { text: MESSAGE.HOLA }
         const data = (await Model.find({}))
@@ -33,14 +33,13 @@ export default {
     async listPosition({position}) {
         const httpStatus = HTTP_STATUS_CODES.OK;
         let message = MESSAGE.NO_HAY_POSICION;
-        const data = JSON.parse(JSON.stringify((await Model.find({}, { _id: 0, "equipo.id": 1, "equipo.nombre": 1, "equipo.jugadores.jugador": 1 }))[0].equipo
+        let data = JSON.parse(JSON.stringify((await Model.find({}, { _id: 0, "equipo.id": 1, "equipo.nombre": 1, "equipo.jugadores.jugador": 1 }))[0].equipo
             .map((team) => ({ id: team.id, nombre: team.nombre, jugadores: team.jugadores[0].jugador}))))
             .map(e => ({ id: e.id, nombre: e.nombre, jugadores: e.jugadores.filter(f => f.rol.nombre === position)})) || [];
         
-        
         let cnt = 0; (data) ? data.forEach(e => {e.jugadores.forEach(f => {cnt++})}) : null;
         
-        (cnt > 0) && (message = MESSAGE.LISTADO_POSICION.replace('COUNT', cnt));
+        (cnt > 0) ? (message = MESSAGE.LISTADO_POSICION.replace('COUNT', cnt)) : data=[];
         
         return { httpStatus, data, message };
     },
