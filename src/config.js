@@ -33,6 +33,10 @@ export const MESSAGE = {
     HOLA: 'Hola FzSports!',
     NO_HAY_EQUIPOS: 'No hay equipos registrados',
     LISTADO_EQUIPOS: 'Hay COUNT equipos registrados',
+    NO_HAY_JUGADORES : 'No hay jugadores en ese equipo',
+    LISTADO_JUGADORES: 'Hay COUNT jugadores en ese equipo',
+    NO_HAY_POSICION: 'No hay jugadores en esa posición',
+    LISTADO_POSICION: 'Hay COUNT jugadores en esa posición',
     TEXT: {
         // RESERVATION_EMPTY: 'No hay reservaciones',
         // RESERVATION_LIST: 'Total de reservaciones: COUNT',

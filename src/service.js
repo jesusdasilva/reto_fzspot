@@ -1,52 +1,47 @@
-// import moment from 'moment';
-// import dao from './dao.js';
+import _ from 'lodash';
 import { HTTP_STATUS_CODES, MESSAGE } from './config.js';
-import Model from './model.js';
+import Model from './model_old.js';
 
 export default {
     async hola() { 
-        const data = {}
         const httpStatus = HTTP_STATUS_CODES.OK;
         const message = { text: MESSAGE.HOLA }
+        const data = (await Model.find({}))
 
         return { httpStatus, data, message };
     },
     async listTeam() {
-        let httpStatus = HTTP_STATUS_CODES.OK;
+        const httpStatus = HTTP_STATUS_CODES.OK;
         let message = MESSAGE.NO_HAY_EQUIPOS;
-
-        // const values = await Model.find({}, {'plantelEquipo.equipo.id':1, 'plantelEquipo.equipo.nombre':1}) || [];
-        const values = await Model.find() || [];
-
-        const data = values //.map(value => value.plantelEquipo.equipo.map(equipo => ({id:equipo.id, nombre: equipo.nombre})))[0];
-        
-        // (data.length > 0) && (message = MESSAGE.LISTADO_EQUIPOS.replace('COUNT', data.length));
+        const data = (await Model.find({}, { _id: 0, "equipo.id": 1, "equipo.nombre": 1, "equipo.sigla":1, "equipo.paisId":1, "equipos.paisNombre":1, "equipo.tipo":1 }))[0]?.equipo
+        .map((team) => ({ id: team.id, nombre: team.nombre, sigla: team.sigla, paisId: team.paisId, paisNombre: team.paisNombre, tipo: team.tipo }));
+                
+        (data.length > 0) && (message = MESSAGE.LISTADO_EQUIPOS.replace('COUNT', data.length));
 
         return { httpStatus, data, message };
     },
     async listPlayers({idTeam}) {
-        let httpStatus = HTTP_STATUS_CODES.OK;
-        let message = { text: MESSAGE.TEXT.RESERVATION_ALL_HOURS_AVAILABLE, type: MESSAGE.TYPE.INFO };
+        const httpStatus = HTTP_STATUS_CODES.OK;
+        let message =  MESSAGE.NO_HAY_JUGADORES;
+        const data = (await Model.find({}, { _id: 0, "equipo.id": 1, "equipo.jugadores.jugador": 1 }))[0]?.equipo
+            .filter((team) => team.id == idTeam)[0]?.jugadores[0]?.jugador || [];
 
-        // const values = await Model.find({"plantelEquipo.equipo.id": "143"}) || [];
-        
-    const values2 = await Model.find({"plantelEquipo.equipo.id":"143"}) || [];
-        // const data = values.map(value => value.plantelEquipo.equipo.map(equipo => ({id:equipo.id, nombre: equipo.nombre})))[0];
-        const data = values2
+        (data?.id.length > 0) && (message = MESSAGE.LISTADO_JUGADORES.replace('COUNT', data?.id.length));
 
         return { httpStatus, data, message };
     },
-    async listPosition({ rEmail, rYear, rMonth, rDay }) {
-        let httpStatus = HTTP_STATUS_CODES.OK;
-        let message = { text: MESSAGE.TEXT.RESERVATION_ALLREADY_EXISTS, type: MESSAGE.TYPE.INFO };
-
-        const values = { rEmail, rYear, rMonth, rDay }
-        const data = await dao.reservation.getActive(values) || [];
+    async listPosition({position}) {
+        const httpStatus = HTTP_STATUS_CODES.OK;
+        let message = MESSAGE.NO_HAY_POSICION;
+        const data = JSON.parse(JSON.stringify((await Model.find({}, { _id: 0, "equipo.id": 1, "equipo.nombre": 1, "equipo.jugadores.jugador": 1 }))[0].equipo
+            .map((team) => ({ id: team.id, nombre: team.nombre, jugadores: team.jugadores[0].jugador}))))
+            .map(e => ({ id: e.id, nombre: e.nombre, jugadores: e.jugadores.filter(f => f.rol.nombre === position)})) || [];
         
-        if(data.length == 0) {
-            message.text = MESSAGE.TEXT.RESERVATION_RESERVATION_NOT_ACTIVE;
-        }            
-
+        
+        let cnt = 0; (data) ? data.forEach(e => {e.jugadores.forEach(f => {cnt++})}) : null;
+        
+        (cnt > 0) && (message = MESSAGE.LISTADO_POSICION.replace('COUNT', cnt));
+        
         return { httpStatus, data, message };
     },
 }

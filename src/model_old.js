@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
-const plantelequipoSchema = new Schema({
-    plantelEquipo: {
+const plantelEquipoSchema = new Schema({
       deporte: {
         id: String,
         nombre: String
@@ -70,8 +69,7 @@ const plantelequipoSchema = new Schema({
           }
         }
       ]
-    }
-  }
+  },{ collection: "plantelEquipo" }
 )
 
-export default model('plantelequipo', plantelequipoSchema)
+export default model('plantelEquipo', plantelEquipoSchema)
