@@ -1,0 +1,12 @@
+
+###
+GET {{host}}{{hola}} HTTP/1.1
+
+###
+GET {{host}}{{team}} HTTP/1.1
+
+###
+GET {{host}}{{players}} HTTP/1.1
+
+###
+GET {{host}}{{position}} HTTP/1.1

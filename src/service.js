@@ -39,7 +39,7 @@ export default {
         
         let cnt = 0; (data) ? data.forEach(e => {e.jugadores.forEach(f => {cnt++})}) : null;
         
-        (cnt > 0) ? (message = MESSAGE.LISTADO_POSICION.replace('COUNT', cnt)) : data=[];
+        (cnt > 0) ? (message = MESSAGE.LISTADO_POSICION.replace('COUNT', cnt)) : data = [];
         
         return { httpStatus, data, message };
     },

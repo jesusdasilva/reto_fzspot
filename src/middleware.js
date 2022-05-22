@@ -1,13 +1,13 @@
 import { HTTP_STATUS_CODES } from "./config.js";
 
-// RESPONSE FORMAT
+// Response Format
 export function responseFormat(_, res) {
 	const { httpStatus, data = {}, message } = res.locals
 
 	res.status(httpStatus).json({ data, message })
 }
 
-// ERROR HANDLER
+// Error Handler
 export function errorHandler(err, req, res, next) {	
 	console.log(err)
 	
