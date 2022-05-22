@@ -3,9 +3,16 @@ import { HTTP_STATUS_CODES, MESSAGE } from './config.js';
 import Model from './model.js'
 
 export default {
-    async list() { 
+    async hola() { 
         const httpStatus = HTTP_STATUS_CODES.OK;
-        const message = { text: MESSAGE.HOLA }
+        const message = MESSAGE.HOLA 
+        const data = {}
+
+        return { httpStatus, data, message };
+    },
+    async listPlantelEquipo() { 
+        const httpStatus = HTTP_STATUS_CODES.OK;
+        const message = ''
         const data = (await Model.find({}))
 
         return { httpStatus, data, message };
@@ -14,9 +21,9 @@ export default {
         const httpStatus = HTTP_STATUS_CODES.OK;
         let message = MESSAGE.NO_HAY_EQUIPOS;
         const data = (await Model.find({}, { _id: 0, "equipo.id": 1, "equipo.nombre": 1, "equipo.sigla":1, "equipo.paisId":1, "equipos.paisNombre":1, "equipo.tipo":1 }))[0]?.equipo
-        .map((team) => ({ id: team.id, nombre: team.nombre, sigla: team.sigla, paisId: team.paisId, paisNombre: team.paisNombre, tipo: team.tipo }));
+            .map((team) => ({ id: team.id, nombre: team.nombre, sigla: team.sigla, paisId: team.paisId, paisNombre: team.paisNombre, tipo: team.tipo }));
                 
-        (data.length > 0) && (message = MESSAGE.LISTADO_EQUIPOS.replace('COUNT', data.length));
+        (data?.length > 0) && (message = MESSAGE.LISTADO_EQUIPOS.replace('COUNT', data?.length));
 
         return { httpStatus, data, message };
     },

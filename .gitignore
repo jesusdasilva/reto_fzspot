@@ -2,6 +2,7 @@ node_modules
 
 # local env files
 .env
+data/mongo/*
 
 # Log files
 npm-debug.log*
